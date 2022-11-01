@@ -1,3 +1,4 @@
+import this
 from flask import *
 from flask_socketio import SocketIO, emit, disconnect
 from threading import Lock, Event
@@ -15,18 +16,46 @@ parse_thread_lock = Lock()
 
 event= Event()
 
-def Naive(text, match):
-    for i in range(len(text)-len(match)+1):
-        j=0
-        while j<len(text):
-            if text[j]!=match[i+j]:
+def Naive(text, match, file):
+    # pattern must be shorter than text
+    count = 0
+    temp = 0
+    my_list = []
+    if len(match) > len(text):
+        return -1
+ 
+    for i in range(len(text) - len(match) + 1):
+        for j in range(len(match)):
+            if text[i+j] != match[j] and ord(text[i+j]) != ord(match[j]) + 32 and ord(text[i+j]) != ord(match[j]) - 32:
                 break
-            j+=1
-        if j==len(text):
-            return True
+ 
+        if j == len(match)-1:
+            print("match[0]", ord(match[0]), "2match[0]", ord(match[0]) + 32, "text[i]", text[i])
+            if(ord(match[0]) >= 65 and ord(match[0]) < 91 and ord(match[0]) + 32 == ord(text[i])):
+                print("I am in the if condition")
+                temp = ord(text[i])
+                my_list = list(match)
+                my_list[0] = chr(temp)
+                new_str= ''.join(my_list)
+                socket_.emit('logging', {'data':f'{file}: {new_str}'})
+                count +=1
+            elif(ord(match[0]) >= 97 and ord(match[0]) < 123 and ord(match[0]) == ord(text[i]) + 32):
+                print("I am in the if condition")
+                temp = ord(text[i])
+                my_list = list(match)
+                my_list[0] = chr(temp)
+                new_str= ''.join(my_list)
+                socket_.emit('logging', {'data':f'{file}: {new_str}'})
+                count +=1
+            else:
+                socket_.emit('logging', {'data':f'{file}: {match}'})
+                count +=1
+    socket_.emit('logging', {'data':f'"{file}"' ' Completed - No More Matches 🚫'})
+    socket_.emit('logging', {'data':'Total Occcurence of 'f'"{match}" ➡️ {count}'})
     return False
 
-def rabinKarp(text, match, q=101, d=256):
+
+def rabinKarp(text, match, file, q=101, d=256):
     M = len(text)
     N = len(match)
     i = 0
@@ -79,7 +108,11 @@ def computeLPSArray(pat, M, lps):
                 lps[i] = 0
                 i += 1
 
-def KMP(pat, txt):
+def KMP(pat, txt, file):
+    pat, txt=txt, pat
+    #txt=txt.lower()
+    #pat=pat.lower()
+
     M = len(pat)
     N = len(txt)
  
@@ -87,7 +120,7 @@ def KMP(pat, txt):
     j = 0 
 
     computeLPSArray(pat, M, lps)
- 
+    count = 0
     i = 0
     while (N - i) >= (M - j):
         if pat[j] == txt[i]:
@@ -95,7 +128,9 @@ def KMP(pat, txt):
             j += 1
  
         if j == M:
-            return True
+            count+=1
+            socket_.emit('logging', {'data':f'{file}: {pat}'})
+                #count+=1
             j = lps[j-1]
 
         elif i < N and pat[j] != txt[i]:
@@ -103,6 +138,8 @@ def KMP(pat, txt):
                 j = lps[j-1]
             else:
                 i += 1
+    socket_.emit('logging', {'data':f'"{file}"' ' Completed - No More Matches 🚫'})
+    socket_.emit('logging', {'data':'Total Occcurence of 'f'"{pat}" ➡️ {count}'})
     return False
  
 
@@ -124,25 +161,26 @@ def parseResumes(path, match, algorithm='Naive'):
                 break
             f=os.path.join(path, file)
             if os.path.isfile(f):
-                if f[:5]=='.docx':
+                socket_.emit('logging', {'data':f'Scanning {file}'})
+                if f[-5:]=='.docx':
                     flag=True
                     doc=docx.document(f)
                     text=''
                     for para in doc.paragraphs:
                         text+=para.text
-                elif f[:4]=='.pdf':
+                elif f[-4:]=='.pdf':
                     flag=True
                     with open(f, 'rb') as pdfFile:
                         pdfReader=PyPDF2.PdfFileReader(pdfFile)
                         pageObj=pdfReader.getPage(0)
                         text=pageObj.extractText()
-                elif f[:4]=='.txt':
+                elif f[-4:]=='.txt':
                     flag=True
-                    with open(f, 'r') as txtFile:
+                    with open(f, 'r', encoding='utf8') as txtFile:
                         text=txtFile.read()
 
-                if stringMatching['algorithm'](text, match):
-                        socket_.emit('logging', {'data':f'{file}'})
+                if flag:
+                    stringMatching[algorithm](text, match, file)
 
         if not flag:
             socket_.emit('logging', {'data':'No resumes found in the specified path'})
@@ -166,8 +204,9 @@ def parse(data):
             path=message['path']
             match=message['match']
             algo=message['algorithm']
+            print(algo)
 
-            parseThread = socket_.start_background_task(parseResumes, match, path, algo)
+            parseThread = socket_.start_background_task(parseResumes, path, match, algo)
             emit('logging', {'data': 'Started parsing'})
         else:
             emit('logging', {'data': 'Process already running'})

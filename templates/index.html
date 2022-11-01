@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Sorting Visualizer</title>
+    <title>String Matcher </title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,7 +16,7 @@
       }
 
       input {
-        width: 350px;
+        width: 375px;
         border: none;
         padding: 12px;
         border-radius: 10px;
@@ -30,7 +30,7 @@
       }
 
       form>div{
-        width: 350px;
+        width: 380px;
         border: none;
         padding: 12px;
         border-radius: 10px;
@@ -93,7 +93,13 @@
         });
 
         socket.on("logging", function (msg, cb) {
-          console.log(msg.data);
+          var i = 0
+          if (msg.data.indexOf(':')!=-1)
+            $('#logs').append('<p style = "color:green">'+msg.data+'</p>')
+          else if (msg.data.indexOf('-')!=-1 || msg.data.indexOf('➡️')!=-1)
+            $('#logs').append('<p style = "color:purple">'+msg.data+'</p>') 
+          else
+            $('#logs').append('<p style = "color:red; font-weight: bold">'+msg.data+'</p>')
         });
 
         $("form#controls").submit(function (event) {
@@ -103,8 +109,8 @@
 
           data = {
             path:path,
-            match:match,
-            algorithm:algorithm
+            match:skill,
+            algorithm:algo
           };
           socket.emit("parse", { data: data });
           return false;
@@ -136,10 +142,9 @@
         <input type="text" id="path" placeholder="Path to Directory" required />
         <input type="text" id="algorithm" placeholder="Algorithm" required />
         <input type="text" id="match" placeholder="Skill to find" required />
-        <div id="logs"></div>
         <button type="submit">Start</button>  
+        <div id="logs"></div>
       </form>
     </div>
-    <div style="height: 50px"></div>
   </body>
 </html>
