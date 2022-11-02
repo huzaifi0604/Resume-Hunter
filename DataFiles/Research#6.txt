@@ -1,4 +1,4 @@
-Chlorine Dioxide Is a Size-Selective Antimicrobial Agent 
+Chlorine Dioxide Is a Size-Selecive Antimicrobial Agent 
 Zoltán Noszticzius1, Maria Wittmann1*, Kristóf Kály-Kullai1, Zoltán Beregvári2, István Kiss3, László Rosivall4, János Szegedi2 
 1 Department of Physics, Budapest University of Technology and Economics, Budapest, Hungary, 2 Jósa András Hospital, Nyíregyháza, Hungary, 3 St. Imre Hospital, Budapest, Hungary, 4 Semmelweis University, Budapest, Hungary 
 Abstract 
@@ -6,7 +6,7 @@ Background / why the solution Aims: killing ClOmicrobes 2, the so-called “idea
 transport Methods: due ClOto 2 permeation reaction and measurements diffusion was determined. through killing times, approximate solutions of the reaction-diffusion protein membranes were performed and the time delay of To calculate equation were ClO2 penetration derived. In these depths calculations and estimate evaporation bacterial ClO2 rates of ClO2 were also measured and taken into account. Results: The rate law of the reaction-diffusion model predicts that the killing time is proportional to the square of the characteristic size (e.g. diameter) of a body, thus, small ones will be killed extremely fast. For example, the killing time for a bacterium (limited by the volatility living tissues of a is on the order of milliseconds in a greater of ClOorganism 2) is quite safely enough below to kill 0.1 all 300 bacteria, mm, ppm minimizing ClObut 2 short solution. cytotoxic enough Thus, to effects keep a few ClOwhen minutes 2 penetration applying of contact it into as time the an antiseptic. Additional bacteria are not able to properties develop of resistance ClO2, living organisms. 
 advantageous for an antiseptic, are also discussed. Most importantly, that against ClO2 as it reacts with biological thiols which play a vital role in all 
 Conclusion: Selectivity of their different size. We hope ClOinitiating 2 between humans and bacteria is based clinical applications of this promising not on their different biochemistry, but on 
-local antiseptic. 
+tYpe local antiseptic. 
 Citation: Noszticzius Z, Wittmann M, Kály-Kullai K, Beregvári Z, Kiss I, et al. (2013) Chlorine Dioxide Is a Size-Selective Antimicrobial Agent . PLoS ONE 8(11): e79157. doi:10.1371/journal.pone.0079157 
 Editor: Patrick M Schlievert, University of Iowa Carver College of Medicine, United States of America 
 Received June 17, 2013; Accepted September 25, 2013; Published November 5, 2013 

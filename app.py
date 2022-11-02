@@ -19,37 +19,19 @@ event= Event()
 def Naive(text, match, file):
     # pattern must be shorter than text
     count = 0
-    temp = 0
-    my_list = []
     if len(match) > len(text):
         return -1
  
     for i in range(len(text) - len(match) + 1):
         for j in range(len(match)):
-            if text[i+j] != match[j] and ord(text[i+j]) != ord(match[j]) + 32 and ord(text[i+j]) != ord(match[j]) - 32:
+            if text[i+j] != match[j] and text[i+j].lower() != match[j].lower():
                 break
  
         if j == len(match)-1:
-            print("match[0]", ord(match[0]), "2match[0]", ord(match[0]) + 32, "text[i]", text[i])
-            if(ord(match[0]) >= 65 and ord(match[0]) < 91 and ord(match[0]) + 32 == ord(text[i])):
-                print("I am in the if condition")
-                temp = ord(text[i])
-                my_list = list(match)
-                my_list[0] = chr(temp)
-                new_str= ''.join(my_list)
-                socket_.emit('logging', {'data':f'{file}: {new_str}'})
+            if match.lower()==text[i:i+len(match)].lower():
+                socket_.emit('logging', {'data':f'{file}: {text[i:i+len(match)]}'})
                 count +=1
-            elif(ord(match[0]) >= 97 and ord(match[0]) < 123 and ord(match[0]) == ord(text[i]) + 32):
-                print("I am in the if condition")
-                temp = ord(text[i])
-                my_list = list(match)
-                my_list[0] = chr(temp)
-                new_str= ''.join(my_list)
-                socket_.emit('logging', {'data':f'{file}: {new_str}'})
-                count +=1
-            else:
-                socket_.emit('logging', {'data':f'{file}: {match}'})
-                count +=1
+
     socket_.emit('logging', {'data':f'"{file}"' ' Completed - No More Matches 🚫'})
     socket_.emit('logging', {'data':'Total Occcurence of 'f'"{match}" ➡️ {count}'})
     return False
@@ -80,7 +62,8 @@ def rabinKarp(text, match, file, q=101, d=256):
                     j += 1
  
             if j == M:
-                return True
+                socket_.emit('logging', {'data':f'{file}: {text[i:i+len(match)]}'})
+                #return True
 
         if i < N-M:
             t = (d*(t-ord(match[i])*h) + ord(match[i+M])) % q
@@ -110,30 +93,38 @@ def computeLPSArray(pat, M, lps):
 
 def KMP(pat, txt, file):
     pat, txt=txt, pat
-    #txt=txt.lower()
-    #pat=pat.lower()
-
+    org_pat = pat
+    org_txt = txt
     M = len(pat)
     N = len(txt)
- 
     lps = [0]*M
     j = 0 
-
-    computeLPSArray(pat, M, lps)
+    k = 0
+    computeLPSArray(org_pat.lower(), M, lps)
     count = 0
     i = 0
-    while (N - i) >= (M - j):
-        if pat[j] == txt[i]:
+    while i < N:
+        if org_pat[j].lower() == org_txt[i].lower():
             i += 1
             j += 1
  
         if j == M:
-            count+=1
-            socket_.emit('logging', {'data':f'{file}: {pat}'})
-                #count+=1
-            j = lps[j-1]
-
-        elif i < N and pat[j] != txt[i]:
+            print ("pat:",org_pat[0],"text:",org_txt[i-len(org_pat)])
+            if(ord(org_pat[0]) >= 65 and ord(org_pat[0])< 91 and ord(org_pat[0]) +32 == ord(org_txt[i-len(org_pat)])):
+                socket_.emit('logging', {'data':f'{file}: {org_txt[(i-len(org_pat)):((i-len(org_pat)) + len(org_pat))]}'})
+                count+=1
+                k+=1
+                j= lps[j-1]
+            elif(ord(org_pat[0]) >= 97 and ord(org_pat[0]) < 123 and ord(org_pat[0]) == ord(org_txt[i-len(org_pat) + 32])):
+                socket_.emit('logging', {'data':f'{file}: {org_txt[(i-len(org_pat)):((i-len(org_pat)) + len(org_pat))]}'})
+                count+=1
+                j= lps[j-1]
+            else:
+                count +=1
+                socket_.emit('logging', {'data':f'{file}: {org_txt[(i-len(org_pat)):((i-len(org_pat)) + len(org_pat))]}'})
+                j= lps[j-1]
+            
+        elif i < N and org_pat[j].lower() != org_txt[i].lower():
             if j != 0:
                 j = lps[j-1]
             else:

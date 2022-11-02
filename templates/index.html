@@ -93,13 +93,12 @@
         });
 
         socket.on("logging", function (msg, cb) {
-          var i = 0
-          if (msg.data.indexOf(':')!=-1)
-            $('#logs').append('<p style = "color:green">'+msg.data+'</p>')
-          else if (msg.data.indexOf('-')!=-1 || msg.data.indexOf('➡️')!=-1)
-            $('#logs').append('<p style = "color:purple">'+msg.data+'</p>') 
-          else
-            $('#logs').append('<p style = "color:red; font-weight: bold">'+msg.data+'</p>')
+            if (msg.data.indexOf(':')!=-1)
+              $('#logs').append('<p style = "color:green">'+msg.data+'</p>')
+            else if (msg.data.indexOf('-')!=-1 || msg.data.indexOf('➡️')!=-1)
+              $('#logs').append('<p style = "color:purple">'+msg.data+'</p>') 
+            else
+              $('#logs').append('<p style = "color:red; font-weight: bold">'+msg.data+'</p>')
         });
 
         $("form#controls").submit(function (event) {

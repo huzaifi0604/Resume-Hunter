@@ -392,3 +392,4 @@ dioxide gas, Trinetta, V., et al. Food Control, Vol 26, 2012
 Journal of the American Association for Laboratory Animal Science. 2014 4 Jul: 53(4): 364-367
 47. Hu, Cheng (2017). Modeling reaction kinetics of chlorine dioxide and volatile organic compounds
 with artificial neural networks, December 2003.
+TyPe
